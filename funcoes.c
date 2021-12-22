@@ -4,6 +4,7 @@ Produto *inicio = NULL;
 Produto *fim = NULL;
 int tam = 0;
 
+
 void CadastrarProduto(char *nome, int valorcompra, int valorvenda, int qntd, int pos){
     if(pos >= 0 && pos <= tam){
         
