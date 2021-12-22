@@ -7,9 +7,10 @@ int autent = -1;
 
 int LogarConta(int aut){
     printf("\n[%d]", aut);
-    if(aut==-1){
-        printf("Voce nao esta logado");
-        return -1;
+    if(aut==0){
+        printf("Voce esta logado ao NOME");
+        autent = 0;
+        FdCaixa(autent);
     }
     else if(aut == 1){
         printf("Voce esta logado como Administrador");
@@ -17,9 +18,8 @@ int LogarConta(int aut){
         Administrador(autent);
     }
     else{
-        printf("Voce esta logado ao NOME");
-        autent = 0;
-        FdCaixa(autent);
+        printf("Voce nao esta logado");
+        return -1;
     }
     return 1;
 }
@@ -34,7 +34,8 @@ void menuscope(){
         printf("* 1-| Cadastrar Funcionario:                            *\n");
         printf("* 2-| Cadastrar Produto:                                *\n");
         printf("* 3-| Adicionar Estoque:                                *\n");
-        printf("* 4-| Consulta Estoque:                                 *\n");
+        printf("* 4-| Remover Produto:                                *\n");
+        printf("* 5-| Consulta Estoque:                                 *\n");
         printf("* 0-| Sair:                                             *\n");
         printf("*-------------------------------------------------------*\n");
         printf("Opção: ");
@@ -56,7 +57,8 @@ int Administrador(int autent){
         return 0;
     do{
         char nomeprod[50];
-        int valorvenda, valorcompra, inqntd, pos;
+        float valorvenda, valorcompra;
+        int inqntd, pos;
         system("clear");
         menuscope();
         scanf("%d", &choice);
@@ -64,7 +66,7 @@ int Administrador(int autent){
         
         switch (choice){
         case 0:
-            exit(0);
+            //exit(0);
             break;
         case 1:
             //CadastrarFuncionario();
@@ -74,9 +76,9 @@ int Administrador(int autent){
             printf("* Nome:                                                       *\n");
             fgets(nomeprod, sizeof nomeprod, stdin);
             printf("* Valor de Venda:                                             *\n");
-            scanf("%d", &valorvenda);
+            scanf("%f", &valorvenda);
             printf("* Valor de Compra:                                            *\n");
-            scanf("%d", &valorcompra);
+            scanf("%f", &valorcompra);
             printf("* Entrada de produto (Quantidade):                            *\n");
             scanf("%d", &inqntd);
             printf("* Posiçao da lista:                                           *\n"); // So por enquanto nao edito o codico
@@ -89,6 +91,10 @@ int Administrador(int autent){
             //AdicionarEstoque();
             break;
         case 4:
+            printf("Remover Produto\n");
+            removerproduto(pos);
+            break;
+        case 5:
             printf("Consulta Estoque\n");
             ConsultaEstoque();
             break;
@@ -96,7 +102,7 @@ int Administrador(int autent){
             break;
         }
     }while(choice!=0);
-    return 0;
+    return 1;
 }
 int FdCaixa(int autent){
     int choice;
@@ -104,6 +110,7 @@ int FdCaixa(int autent){
         return 0;
 
     do{
+        int id, outqntd;
         system("clear");
         menuscope();
         scanf("%d", &choice);
@@ -111,21 +118,19 @@ int FdCaixa(int autent){
         
         switch (choice){
         case 0:
-            exit(0);
+            //exit(0);
             break;
         case 1:
-            printf("FazerVenda");
-            //FazerVenda();
+            FazerVenda();
             break;
         case 2:
-            printf("ConsultaEstoque");
-            //ConsultaEstoque();
+            printf("Consulta Estoque\n");
+            ConsultaEstoque();
             break;
         default:
             break;
         }
     }while(choice!=0);
     
-    return 0;
+    return 1;
 }
-
