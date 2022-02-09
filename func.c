@@ -54,9 +54,9 @@ void ListarContas(user_dados* l){
 		return;
 	}
     printf("\n*--------------------Contas[%d]--------------------*\n", l->user_qntd);
-    printf("Conta |Senha  |Tipo\n");      
+    printf("Conta |Senha |Tipo\n");      
     do{
-        printf("%s |%s      |%d\n", aux->login, aux->senha, aux->tipo);
+        printf("%-5s |%-6s |%d\n", aux->login, aux->senha, aux->tipo);
         aux = aux->prox;
     } while(aux != NULL);
     printf("*------------------------------------------------*\n");
@@ -77,9 +77,6 @@ void addproduto(ListaBlocos* l, char*  str, int barra, float vcompra, float vven
         l->ult->valorvenda = vvenda;
         l->ult->id = 0;
         l->id_p = l->ult->id;
-        printf("Nome: %s\n", l->ult->nome);
-        printf("Qntd: %d\n", l->ult->qntd);
-        printf("Inseriu Novo\n");
 	}
     else if(aux != NULL){
         inserirBloco(l);
@@ -91,9 +88,6 @@ void addproduto(ListaBlocos* l, char*  str, int barra, float vcompra, float vven
         l->ult->qntd = qntd;
         l->ult->id = l->id_p + 1;
         l->id_p =  l->ult->id;
-        printf("Nome: %s\n", l->ult->nome);
-        printf("Qntd: %d\n", l->ult->qntd);
-        printf("Inseriu\n");
     }
 
 }
@@ -175,10 +169,13 @@ void FazerVenda(ListaBlocos* l, cesta_dados* c){
             break;
         }
     }
-    for(int i=0; i < c->tamanho; i++){
+    //-----------------------------------------
+    //Esse aqui era o error que deu pra n salvar. Eu estava tentando fazer o remover e esqueci de tirar
+    /*for(int i=0; i < c->tamanho; i++){ 
         free(help);
         help=help->prox;
-    }
+    }*/
+    //-----------------------------------------
     contador = 0;
     Salvar_carrinho(c);
 }
@@ -202,13 +199,13 @@ void ListarProdutos(ListaBlocos* l, int aut){
         printf("*------------------------------------------------*\n");
     }
     else if(aut == 1){
-        printf("\n*--------------------Produtos--------------------*\n");
+        printf("\n*-------------------- Produtos --------------------*\n");
         printf("Codico |Produto       |Codico Barra |Quantidade     |Valor de Venda |Valor de Compra\n");      
         do{
             printf("%d      |%-13s |%-12d |%-14d |%-14.2f |%.2f\n", aux->id, aux->nome, aux->cod_barra, aux->qntd, aux->valorvenda, aux->valorcompra);
             aux = aux->prox;
         } while(aux != NULL);
-        printf("*------------------------------------------------*\n");
+        printf("*--------------------------------------------------*\n");
     }
     getchar();
 }
@@ -234,10 +231,10 @@ void MostraCarrinho(cesta_dados* c, int tam){
 		return;
 	}
     printf("\n*--------------------- Carrinho ----------------------*\n");
-    printf("Codico |Produto            |Quantidade              |Total \n");      
+    printf("Codico |Produto |Quantidade |Total\n");      
     do{
         if(aux->nome_produto != NULL)
-            printf("%d      |%s                  |%d                |%.2f\n", aux->id_produto, aux->nome_produto, aux->qnt_produto, aux->total_produto);
+            printf("%-6d |%-7s |%-10d |%.2f\n", aux->id_produto, aux->nome_produto, aux->qnt_produto, aux->total_produto);
         aux = aux->prox;
     }while(aux != NULL);
     printf("                                                  |%.2f\n", c->total_carrinho);
@@ -312,10 +309,10 @@ int ler_dados(ListaBlocos* lista){
 void salvar_conta(user_dados* conta){
     user * aux = conta->prim;
     if(aux == NULL){
-        printf("Estoque Vazio\n");
+        printf("Nenhuma conta cadastrada\n");
         return;
     }
-    FILE* arq = fopen("./dados/contas.txt", "a");
+    FILE* arq = fopen("./dados/contas.txt", "w");
     if( arq == NULL){
         printf("Arquivo não encontrado /:\n");
         exit(1);
@@ -332,7 +329,7 @@ int ler_conta(user_dados* conta){
     conta->user_qntd = 0;
     char login[12], senha[8];
     int tipo; 
-    float vcompra, vvenda;
+    
     FILE* arq = fopen("./dados/contas.txt", "r");
 
     if(arq != NULL){

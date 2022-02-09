@@ -12,7 +12,21 @@ typedef struct usuario user;
 typedef struct cestalista cesta_dados;
 typedef struct Cesta carrinho;
 
+struct usuario{
+    char nome[50];
+    char *login;
+    char *senha;
+    int tipo;
+    int usuario_qntd;
+    struct usuario* prox;
+};
 
+struct userlista{
+    user * prim;
+    user * ult;
+    int user_qntd;
+    int tamanho;
+};
 
 struct no{
     int id;
@@ -29,22 +43,6 @@ struct lista{
 	produto* ult;
     int id_p;
 	int tamanho;
-};
-
-struct usuario{
-    char nome[50];
-    char *login;
-    char *senha;
-    int tipo;
-    int usuario_qntd;
-    struct usuario* prox;
-};
-
-struct userlista{
-    user * prim;
-    user * ult;
-    int user_qntd;
-    int tamanho;
 };
 
 struct Cesta{

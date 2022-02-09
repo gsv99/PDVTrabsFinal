@@ -38,7 +38,7 @@ int main(){
         scanf("%8[^\n]%*c", psw);
         login = fazer_login(user_lista, str, psw);
     }
-// falta while aki <---------------------------------------------
+
     if(login == Admin){
         Administrador(login, lista, user_lista, cesta_lista);
     }
