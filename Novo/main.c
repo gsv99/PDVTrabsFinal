@@ -6,17 +6,21 @@
 int main(){
     int choice, login = 2;
     char str[12], psw[8];
+
     ListaBlocos* lista = NULL;	
     lista = criarListaBlocos();
 
     user_dados* user_lista = NULL;	
     user_lista = criarListaUser();
 
+    cesta_dados* cesta_lista = NULL;	
+    cesta_lista = criarListaCesta();
+
     do{
         printf("Criar a conta administradora:\nPS: Nao possui conta:\nPressionar enter para continuar\n");
         getchar();
         login = 1;
-        Administrador(login, lista, user_lista);
+        Administrador(login, lista, user_lista, cesta_lista);
     }while(user_lista->prim == NULL);
 
     login = 2;
@@ -27,19 +31,16 @@ int main(){
         printf("-------- FAÇA SEU LOGIN --------\n");
         printf("LOGIN: ");
         scanf("%12[^\n]%*c", str);
-        puts("");
         printf("SENHA: ");
         scanf("%8[^\n]%*c", psw);
         login = fazer_login(user_lista, str, psw);
-        printf("LoginID: %d\n", login);
-
     }
-// falta while aki
+// falta while aki <---------------------------------------------
     if(login == Admin){
-        Administrador(login, lista, user_lista);
+        Administrador(login, lista, user_lista, cesta_lista);
     }
     else if(login == Curumi){
-        Funcionario(login, lista);
+        Funcionario(login, lista, cesta_lista);
     }
 
     return 0;
@@ -74,7 +75,7 @@ void menuscope(int aut){
     }
 }
 
-void Administrador(int aut, ListaBlocos* lista, user_dados* user_lista){
+void Administrador(int aut, ListaBlocos* lista, user_dados* user_lista, cesta_dados* cesta_lista){
     int choice;
     if(aut != 1)
         return;
@@ -130,7 +131,7 @@ void Administrador(int aut, ListaBlocos* lista, user_dados* user_lista){
             break;
         case 7:
             printf("Fazer Venda\n");
-            FazerVenda(lista);
+            FazerVenda(lista, cesta_lista);
             break;
         default:
             break;
@@ -138,7 +139,7 @@ void Administrador(int aut, ListaBlocos* lista, user_dados* user_lista){
     }
 }
 
-void Funcionario(int aut, ListaBlocos* lista){
+void Funcionario(int aut, ListaBlocos* lista, cesta_dados* cesta_lista){
     int choice;
     if(aut != 0)
         return;
@@ -155,7 +156,7 @@ void Funcionario(int aut, ListaBlocos* lista){
             //exit(0);
             break;
         case 1:
-            FazerVenda(lista);
+            FazerVenda(lista, cesta_lista);
             break;
         case 2:
             printf("Consulta Estoque\n");
