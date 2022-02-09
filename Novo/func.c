@@ -45,7 +45,6 @@ void adduser(user_dados* l, char*  str, char *psw, int tipo){
     }
 }
 
-
 void ListarContas(user_dados* l){
 	user* aux = l->prim;
 
@@ -64,16 +63,23 @@ void ListarContas(user_dados* l){
     getchar();
 }
 
-void addproduto(ListaBlocos* l, char*  str, int barra, float vcompra, float vvenda){
+//---------------------------------------------------------------------------------------------------
+
+void addproduto(ListaBlocos* l, char*  str, int barra, float vcompra, float vvenda, int qntd){
     produto* aux = l->prim;
 	if(aux == NULL){
         inserirBloco(l);
         l->ult->nome = (char*)malloc(sizeof(char) * strlen(str)+1 );
 	    strcpy( l->ult->nome, str);
         l->ult->cod_barra = barra;
+        l->ult->qntd = qntd;
         l->ult->valorcompra = vcompra;
         l->ult->valorvenda = vvenda;
+        l->ult->id = 0;
         l->id_p = l->ult->id;
+        printf("Nome: %s\n", l->ult->nome);
+        printf("Qntd: %d\n", l->ult->qntd);
+        printf("Inseriu Novo\n");
 	}
     else if(aux != NULL){
         inserirBloco(l);
@@ -82,8 +88,12 @@ void addproduto(ListaBlocos* l, char*  str, int barra, float vcompra, float vven
         l->ult->cod_barra = barra;
         l->ult->valorcompra = vcompra;
         l->ult->valorvenda = vvenda;
+        l->ult->qntd = qntd;
         l->ult->id = l->id_p + 1;
         l->id_p =  l->ult->id;
+        printf("Nome: %s\n", l->ult->nome);
+        printf("Qntd: %d\n", l->ult->qntd);
+        printf("Inseriu\n");
     }
 
 }
@@ -120,19 +130,19 @@ void FazerVenda(ListaBlocos* l, cesta_dados* c){
     /*if(aut != 1) Futuro Caixa
         return;*/
     while(1){
+        aux = l->prim;
         int sair=-1, id = 0, qnt; 
         float total=0, pago = 0;
 
         MostraCarrinho(c, contador);
         printf("\n*----------------------- Caixa -----------------------*\n");
         printf("* 1-| Adicionar ao carrinho:                            *\n");
-        printf("* 2-| Remover produto do carrinho:                      *\n");
-        printf("* 3-| Finalizar venda:                                  *\n");
+        printf("* 2-| Finalizar venda:                                  *\n");
         printf("*-------------------------------------------------------*\n");
         printf("Opção: ");
         scanf("%d", &choice);
         getchar();
-        if(choice == 3)
+        if(choice == 2)
             break;
         switch (choice){
         case 1:
@@ -161,26 +171,16 @@ void FazerVenda(ListaBlocos* l, cesta_dados* c){
             contador++;
             fazerCesta(c, aux->nome, id, qnt, total);            
             break;
-        case 2:
-            printf("Id produto para remover do carrinho\n");
-            scanf("%d", &id);
-            for(int i=0; i < id; i++){
-                help = help->prox;
-                if(help == NULL)
-                    return;
-                if(help->id_produto != id){
-                    printf("Produto nao encontrado\n");
-                    return;
-                }
-            }
-            removerCesta(c, id);
-            contador--;
-            printf("Produto removido com sucesso\n");
-            break;
         default:
             break;
         }
     }
+    for(int i=0; i < c->tamanho; i++){
+        free(help);
+        help=help->prox;
+    }
+    contador = 0;
+    Salvar_carrinho(c);
 }
 
 void ListarProdutos(ListaBlocos* l, int aut){
@@ -195,16 +195,17 @@ void ListarProdutos(ListaBlocos* l, int aut){
         printf("\n*--------------------Produtos--------------------*\n");
         printf("Codico |Produto                |Codico Barra                |Quantidade                |Valor \n");      
         do{
-            printf("%d      |%s                       |%d                           |%d                |%2.f\n", aux->id, aux->nome, aux->cod_barra, aux->qntd, aux->valorvenda);
+
+            printf("%d      |%-13s |%-12d |%-14d |%2.f\n", aux->id, aux->nome, aux->cod_barra, aux->qntd, aux->valorvenda);
             aux = aux->prox;
-        } while(aux != NULL);
+        } while(aux != NULL);    
         printf("*------------------------------------------------*\n");
     }
     else if(aut == 1){
         printf("\n*--------------------Produtos--------------------*\n");
-        printf("Codico |Produto       |Codico Barra |Quantidade     |Valor de Venda       |Valor de Compra\n");      
+        printf("Codico |Produto       |Codico Barra |Quantidade     |Valor de Venda |Valor de Compra\n");      
         do{
-            printf("%d      |%s       |%d        |%d          |%2.f            |%2.f\n", aux->id, aux->nome, aux->cod_barra, aux->qntd, aux->valorvenda, aux->valorcompra);
+            printf("%d      |%-13s |%-12d |%-14d |%-14.2f |%.2f\n", aux->id, aux->nome, aux->cod_barra, aux->qntd, aux->valorvenda, aux->valorcompra);
             aux = aux->prox;
         } while(aux != NULL);
         printf("*------------------------------------------------*\n");
@@ -241,4 +242,107 @@ void MostraCarrinho(cesta_dados* c, int tam){
     }while(aux != NULL);
     printf("                                                  |%.2f\n", c->total_carrinho);
     printf("*-------------------------------------------------------*\n");
+}
+
+//------------------------------------------- Arquivos -----------------------------------------------------
+
+void Salvar_carrinho(cesta_dados* c){
+    time_t t = time(NULL);
+  	struct tm tm = *localtime(&t);
+    
+    carrinho* aux = c->prim;
+    if(aux == NULL)
+        return;
+    FILE* arq = fopen("./dados/carrinho.txt", "a");
+    if( arq == NULL){
+        printf("Arquivo não encontrado /:\n");
+        exit(1);
+    }
+    fprintf(arq,"%d-%02d-%02d %02d:%02d:%02d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+    do{
+        fprintf(arq,"%s |  %d   |    %.2f\n", aux->nome_produto, aux->qnt_produto, aux->total_produto);
+        aux= aux->prox;
+    }while(aux != NULL);
+    fprintf(arq,"                  %.2f\n", c->total_carrinho);
+    fclose(arq);
+}
+
+void Salvar_estoque(ListaBlocos* lista){
+    produto * aux = lista->prim;
+    if(aux == NULL){
+        printf("Estoque Vazio\n");
+        return;
+    }
+    FILE* arq = fopen("./dados/estoque.txt", "w");
+    if( arq == NULL){
+        printf("Arquivo não encontrado /:\n");
+        exit(1);
+    }
+    do{
+        printf("%d %.2f %.2f %d %s\n", aux->cod_barra, aux->valorcompra, aux->valorvenda, aux->qntd, aux->nome);
+        fprintf(arq,"%d %.2f %.2f %d %s\n", aux->cod_barra, aux->valorcompra, aux->valorvenda, aux->qntd, aux->nome);
+        aux = aux->prox;
+    }while(aux != NULL);
+    
+    fclose(arq);
+}
+
+int ler_dados(ListaBlocos* lista){
+    lista->id_p = 0;
+    char nome[25];
+    int barra, qntd; 
+    float vcompra, vvenda;
+    FILE* arq = fopen("./dados/estoque.txt", "r");
+
+    if(arq != NULL){
+        while(fscanf(arq,"%d %f %f %d %[^\n]s", &barra, &vcompra, &vvenda, &qntd, nome) != EOF){
+            //printf("%d %.2f %.2f %d %s\n", barra, vcompra, vvenda, qntd, nome);
+            addproduto(lista, nome, barra, vcompra, vvenda, qntd);
+            //lista->id_p++;
+            //aqui dentro chama a função de adicionar no estoque passa como paramtros os dados do fscanf
+            //printf("%d %s\n", a, nome);
+        }
+    }
+    else
+        return 1;
+    fclose(arq);
+    return 0;
+}
+
+void salvar_conta(user_dados* conta){
+    user * aux = conta->prim;
+    if(aux == NULL){
+        printf("Estoque Vazio\n");
+        return;
+    }
+    FILE* arq = fopen("./dados/contas.txt", "a");
+    if( arq == NULL){
+        printf("Arquivo não encontrado /:\n");
+        exit(1);
+    }
+    do{
+        fprintf(arq,"%s %d %s\n", aux->login, aux->tipo, aux->senha);
+        aux = aux->prox;
+    }while(aux != NULL);
+    
+    fclose(arq);
+}
+
+int ler_conta(user_dados* conta){
+    conta->user_qntd = 0;
+    char login[12], senha[8];
+    int tipo; 
+    float vcompra, vvenda;
+    FILE* arq = fopen("./dados/contas.txt", "r");
+
+    if(arq != NULL){
+        while(fscanf(arq,"%s %d %[^\n]s",login, &tipo, senha) != EOF){
+            adduser(conta, login, senha, tipo);
+            conta->user_qntd = 1;
+        }
+    }
+    else
+        return 1;
+    fclose(arq);
+    return 0;
 }

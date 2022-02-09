@@ -4,24 +4,27 @@
 #define Curumi 0 // PS: sinonimo de Funcionario
 
 int main(){
+    
     int choice, login = 2;
     char str[12], psw[8];
 
-    ListaBlocos* lista = NULL;	
+    ListaBlocos* lista = NULL;
     lista = criarListaBlocos();
+    ler_dados(lista);
 
     user_dados* user_lista = NULL;	
     user_lista = criarListaUser();
+    ler_conta(user_lista);
 
     cesta_dados* cesta_lista = NULL;	
     cesta_lista = criarListaCesta();
-
-    do{
+    
+    while(user_lista->user_qntd == 0){
         printf("Criar a conta administradora:\nPS: Nao possui conta:\nPressionar enter para continuar\n");
         getchar();
         login = 1;
         Administrador(login, lista, user_lista, cesta_lista);
-    }while(user_lista->prim == NULL);
+    }
 
     login = 2;
 
@@ -55,12 +58,13 @@ void menuscope(int aut){
         printf("\n*-------------------- Administrador --------------------*\n");
         printf("* 1-| Cadastrar Contas:                                 *\n");
         printf("* 2-| Mostrar Contas:                                   *\n");
-        printf("* 3-| Cadastrar Produto:                                *\n");
-        printf("* 4-| Adicionar Estoque:                                *\n");
-        printf("* 5-| Remover Produto:                                  *\n");
+        printf("* 3-| Salvar Contas:                                    *\n");
+        printf("* 4-| Cadastrar Produto:                                *\n");
+        printf("* 5-| Adicionar Estoque:                                *\n");
         printf("* 6-| Consulta Estoque:                                 *\n");
-        printf("* 7-| Fazer Venda:                                      *\n");
-        printf("* 8-| Sair:                                             *\n");
+        printf("* 7-| Salvar Estoque:                                   *\n");
+        printf("* 8-| Fazer Venda:                                      *\n");
+        printf("* 9-| Sair:                                             *\n");
         printf("*-------------------------------------------------------*\n");
         printf("Opção: ");
     }
@@ -81,14 +85,14 @@ void Administrador(int aut, ListaBlocos* lista, user_dados* user_lista, cesta_da
         return;
     while(1){
         char nomeprod[50], login[12], senha[8];
-        int cod_barra, tipo;
+        int cod_barra, tipo, qntd = 0;
         float valorvenda, valorcompra;
         int inqntd, id;
         //system("clear");
         menuscope(aut);
         scanf("%d", &choice);
         getchar();
-        if(choice == 8)
+        if(choice == 9)
             break;
         switch (choice){
         case 1:
@@ -104,6 +108,10 @@ void Administrador(int aut, ListaBlocos* lista, user_dados* user_lista, cesta_da
             ListarContas(user_lista);
             break;
         case 3:
+            printf("Contas Salvas\n");
+            salvar_conta(user_lista);
+            break;
+        case 4:
             printf("\n*-------------------- Cadastrar Produto --------------------*\n");
             printf("* Nome:                                                       *\n");
             scanf("%50[^\n]%*c", nomeprod);
@@ -114,22 +122,24 @@ void Administrador(int aut, ListaBlocos* lista, user_dados* user_lista, cesta_da
             printf("* Valor de Venda:                                             *\n");
             scanf("%f", &valorcompra);
             printf("*-------------------------------------------------------------*\n");
-            addproduto(lista, nomeprod, cod_barra, valorvenda, valorcompra);
+            printf("Teste\n");
+            addproduto(lista, nomeprod, cod_barra, valorvenda, valorcompra, qntd);
+            printf("Teste\n");
             break;
-        case 4:
+        case 5:
             printf("AdicionarEstoque:\n Digite o ID do produto: ");
             scanf("%d", &id);
             AdicionarEstoque(lista, id);
-            break;
-        case 5:
-            printf("Remover Produto\n");
-            //removerproduto(pos);
             break;
         case 6:
             printf("Consulta Estoque\n");
             ListarProdutos(lista, aut);
             break;
         case 7:
+            printf("Estoque Salvo\n");
+            Salvar_estoque(lista);
+            break;
+        case 8:
             printf("Fazer Venda\n");
             FazerVenda(lista, cesta_lista);
             break;

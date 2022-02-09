@@ -40,57 +40,6 @@ int inserirUser(user_dados* l)
 	
 }
 
-/*int removerUser(user_dados* l, int codigo)
-{
-	if( l == NULL)
-		return 0;
-
-	user* ant = NULL;
-	user* p = l->prim;
-	
-	while( p != NULL && (p->codigo != codigo) ){
-		ant = p;
-		p = p->prox;
-	}
-	
-	if( p != NULL )
-	{	ant->prox = p->prox;
-	
-		for(int i = 0; i<p->N; i++)
-			free(p->tweets[i]);
-		free(p->tweets);
-		free(p);
-		
-		l->tamanho = l->tamanho - 1;
-		
-		return 1;
-	}
-	
-	return 0;
-}*/
-
-/*int apagarListaUser(user_dados** l)
-{
-	if( l==NULL)
-		return 0;
-		
-	user* p = (*l)->prim;
-	while(p != NULL )
-	{
-		user* t = p->prox;
-		for(int i = 0; i<p->N; i++)
-			free(p->tweets[i]);
-		free(p->tweets);
-		free(p);
-		p = t;
-	}
-	
-	free( (*l) );
-	*l = NULL;
-	
-	return 1;
-}*/
-
 int quantidadeUser(user_dados* l){
 	return l->tamanho;
 }

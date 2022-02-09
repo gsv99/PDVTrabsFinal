@@ -12,6 +12,8 @@ typedef struct usuario user;
 typedef struct cestalista cesta_dados;
 typedef struct Cesta carrinho;
 
+
+
 struct no{
     int id;
 	char *nome;
@@ -34,7 +36,6 @@ struct usuario{
     char *login;
     char *senha;
     int tipo;
-    int ponto;
     int usuario_qntd;
     struct usuario* prox;
 };
@@ -64,11 +65,9 @@ struct cestalista{
 };
 
 //Bloco Users
-user_dados* criarListaUser(void);	//NULL para erro
-int inserirUser(user_dados*);		//1 para sucesso e, 0 para erro
-//int removerUser(user_dados*);			//1 para sucesso e, 0 para erro
-int quantidadeUser(user_dados* );	//quantidade para sucesso e, -1 para erro
-//int apagarListaUser(user_dados** );		//1 para sucesso e, 0 para erro
+user_dados* criarListaUser(void);
+int inserirUser(user_dados*);
+int quantidadeUser(user_dados* );
 
 void adduser(user_dados* l, char*  str, char *psw, int tipo);
 void ListarContas(user_dados* l);
@@ -81,13 +80,11 @@ void Funcionario(int aut, ListaBlocos*, cesta_dados*);
 //----------------------------------------------------------------------------
 
 //Bloco Produtos
-ListaBlocos* criarListaBlocos(void);	//NULL para erro
-int inserirBloco(ListaBlocos*);		//1 para sucesso e, 0 para erro
-int removerBloco(ListaBlocos*);			//1 para sucesso e, 0 para erro
-int quantidadeBlocos(ListaBlocos*);	//quantidade para sucesso e, -1 para erro
-int apagarListaBlocos(ListaBlocos** );		//1 para sucesso e, 0 para erro
+ListaBlocos* criarListaBlocos(void);
+int inserirBloco(ListaBlocos*);
+int quantidadeBlocos(ListaBlocos*);
 
-void addproduto(ListaBlocos* l, char*  str, int barra, float vcompra, float vvenda);
+void addproduto(ListaBlocos* l, char*  str, int barra, float vcompra, float vvenda, int qntd);
 void AdicionarEstoque(ListaBlocos* l, int id);
 void ListarProdutos(ListaBlocos* l, int aut);
 
@@ -95,9 +92,18 @@ void ListarProdutos(ListaBlocos* l, int aut);
 
 void FazerVenda(ListaBlocos* l, cesta_dados* c);
 
-cesta_dados* criarListaCesta(void);	//NULL para erro
-int inserirCesta(cesta_dados*);		//1 para sucesso e, 0 para erro
-int removerCesta(cesta_dados*, int);			//1 para sucesso e, 0 para erro
-int quantidadeCesta(cesta_dados* );	//quantidade para sucesso e, -1 para erro
+cesta_dados* criarListaCesta(void);
+int inserirCesta(cesta_dados*);
+int quantidadeCesta(cesta_dados* );
 void fazerCesta(cesta_dados* c, char*  str, int id_prod, int qnt_prod, float total_prod);
 void MostraCarrinho(cesta_dados* c, int);
+
+
+//-----------------------------------------------------------------------------
+void Salvar_carrinho(cesta_dados*);
+
+int ler_dados(ListaBlocos*);
+void Salvar_estoque(ListaBlocos*);
+
+int ler_conta(user_dados*);
+void salvar_conta(user_dados*);

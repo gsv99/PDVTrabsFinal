@@ -39,35 +39,6 @@ int inserirCesta(cesta_dados * c){
 	
 }
 
-int removerCesta(cesta_dados* l, int id)
-{
-	if( l == NULL)
-		return 0;
-
-	carrinho* ant = NULL;
-	carrinho* p = l->prim;
-	
-	while( p != NULL && (p->id_produto != id) ){
-		ant = p;
-		p = p->prox;
-	}
-	
-	if( p != NULL ){	
-		l->total_carrinho = l->total_carrinho - ant->total_produto;
-
-		ant->prox = p->prox;
-		
-		free(p->nome_produto);
-		free(p);
-		
-		l->tamanho = l->tamanho - 1;
-		
-		return 1;
-	}
-	
-	return 0;
-}
-
 int quantidadeCesta(cesta_dados* c){
 	return c->tamanho;
 }
